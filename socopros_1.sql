@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost
--- Время создания: Июн 17 2019 г., 19:41
+-- Время создания: Июн 18 2019 г., 14:56
 -- Версия сервера: 5.7.25-0ubuntu0.18.04.2
 -- Версия PHP: 7.2.15-1+ubuntu18.04.1+deb.sury.org+1
 
@@ -63,7 +63,9 @@ CREATE TABLE `personal_data` (
 INSERT INTO `personal_data` (`id`, `user_id`, `name`, `famaly`, `patronymic`) VALUES
 (1, 3, 'Коновалов', 'Виталий', 'Василевич'),
 (2, 4, 'Василий', 'Алибабаевич', 'Петров'),
-(3, 5, 'Василий', 'Абдула', 'Мухамедов');
+(3, 5, 'Василий', 'Абдула', 'Мухамедов'),
+(4, 6, 'Анатолий', 'Абдула', ''),
+(5, 7, 'Валентина', 'Гавриловна', '');
 
 -- --------------------------------------------------------
 
@@ -73,6 +75,7 @@ INSERT INTO `personal_data` (`id`, `user_id`, `name`, `famaly`, `patronymic`) VA
 
 CREATE TABLE `questions` (
   `id` int(10) UNSIGNED NOT NULL,
+  `social_poll_id` int(10) UNSIGNED NOT NULL,
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -80,15 +83,15 @@ CREATE TABLE `questions` (
 -- Дамп данных таблицы `questions`
 --
 
-INSERT INTO `questions` (`id`, `description`) VALUES
-(1, 'Верите ли Вы в любовь с первого взгляда?'),
-(2, 'Часто ли Вы моетесь в бане?'),
-(3, 'Обливаетесь ли Вы холодной водой?'),
-(4, 'Любите ли Вы готовить?'),
-(5, 'Кормите ли вы бездомных кошек?'),
-(6, 'Одеваете ли Вы лыжи летом?'),
-(7, 'Часто ли Вы опаздываете на работу (учёбу)?'),
-(8, 'Часто ли вы посещаете ресторан?');
+INSERT INTO `questions` (`id`, `social_poll_id`, `description`) VALUES
+(1, 1, 'Верите ли Вы в любовь с первого взгляда?'),
+(2, 1, 'Часто ли Вы моетесь в бане?'),
+(3, 1, 'Обливаетесь ли Вы холодной водой?'),
+(4, 1, 'Любите ли Вы готовить?'),
+(5, 2, 'Кормите ли вы бездомных кошек?'),
+(6, 2, 'Одеваете ли Вы лыжи летом?'),
+(7, 2, 'Часто ли Вы опаздываете на работу (учёбу)?'),
+(8, 2, 'Часто ли вы посещаете ресторан?');
 
 -- --------------------------------------------------------
 
@@ -112,26 +115,22 @@ INSERT INTO `question_user` (`id`, `user_id`, `questions_id`, `answers_id`) VALU
 (2, 3, 2, 2),
 (3, 3, 3, 2),
 (4, 3, 4, 2),
-(5, 3, 5, 2),
-(6, 3, 6, 2),
-(7, 3, 7, 3),
-(8, 3, 8, 2),
 (9, 4, 1, 2),
 (10, 4, 2, 3),
 (11, 4, 3, 1),
 (12, 4, 4, 3),
-(13, 4, 5, 1),
-(14, 4, 6, 2),
-(15, 4, 7, 2),
-(16, 4, 8, 3),
 (17, 5, 1, 1),
 (18, 5, 2, 1),
 (19, 5, 3, 2),
 (20, 5, 4, 2),
-(21, 5, 5, 1),
-(22, 5, 6, 3),
-(23, 5, 7, 2),
-(24, 5, 8, 2);
+(25, 6, 1, 1),
+(26, 6, 2, 3),
+(27, 6, 3, 2),
+(28, 6, 4, 3),
+(29, 7, 5, 1),
+(30, 7, 6, 2),
+(31, 7, 7, 2),
+(32, 7, 8, 3);
 
 -- --------------------------------------------------------
 
@@ -155,11 +154,31 @@ INSERT INTO `sex` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `social_poll`
+--
+
+CREATE TABLE `social_poll` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Дамп данных таблицы `social_poll`
+--
+
+INSERT INTO `social_poll` (`id`, `name`) VALUES
+(1, '№1'),
+(2, '№2');
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `user`
 --
 
 CREATE TABLE `user` (
   `id` int(10) UNSIGNED NOT NULL,
+  `social_poll_id` int(10) UNSIGNED NOT NULL,
   `phone` varchar(20) NOT NULL,
   `email` varchar(250) NOT NULL,
   `sex_id` tinyint(3) UNSIGNED NOT NULL,
@@ -170,12 +189,12 @@ CREATE TABLE `user` (
 -- Дамп данных таблицы `user`
 --
 
-INSERT INTO `user` (`id`, `phone`, `email`, `sex_id`, `years_old`) VALUES
-(1, '+8 (999) 999 99 99', 'join@ypok.com', 1, 25),
-(2, '+8 (999) 999 99 99', 'join@ypok.com', 1, 25),
-(3, '+8 (666) 666 66 66', 'yuy@ypok.com', 1, 35),
-(4, '+8 (555) 555 55 55', 'qwerty@ypok.com', 1, 45),
-(5, '+8 (888) 888 88 88', 'joim123@ypok.com', 1, 55);
+INSERT INTO `user` (`id`, `social_poll_id`, `phone`, `email`, `sex_id`, `years_old`) VALUES
+(3, 1, '+8 (666) 666 66 66', 'yuy@ypok.com', 1, 35),
+(4, 1, '+8 (555) 555 55 55', 'qwerty@ypok.com', 1, 45),
+(5, 1, '+8 (888) 888 88 88', 'joim123@ypok.com', 1, 55),
+(6, 1, '+8 (111) 111 11 11', 'joim999@ypok.com', 1, 50),
+(7, 2, '+8 (444) 444 44 44', 'yu777y@ypok.com', 2, 96);
 
 --
 -- Индексы сохранённых таблиц
@@ -198,7 +217,8 @@ ALTER TABLE `personal_data`
 -- Индексы таблицы `questions`
 --
 ALTER TABLE `questions`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `social_poll_id` (`social_poll_id`);
 
 --
 -- Индексы таблицы `question_user`
@@ -216,11 +236,18 @@ ALTER TABLE `sex`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `social_poll`
+--
+ALTER TABLE `social_poll`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `sex_id` (`sex_id`);
+  ADD KEY `sex_id` (`sex_id`),
+  ADD KEY `social_poll_id` (`social_poll_id`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -236,7 +263,7 @@ ALTER TABLE `answers`
 -- AUTO_INCREMENT для таблицы `personal_data`
 --
 ALTER TABLE `personal_data`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT для таблицы `questions`
@@ -248,7 +275,7 @@ ALTER TABLE `questions`
 -- AUTO_INCREMENT для таблицы `question_user`
 --
 ALTER TABLE `question_user`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT для таблицы `sex`
@@ -257,10 +284,16 @@ ALTER TABLE `sex`
   MODIFY `id` tinyint(3) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT для таблицы `social_poll`
+--
+ALTER TABLE `social_poll`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -271,6 +304,12 @@ ALTER TABLE `user`
 --
 ALTER TABLE `personal_data`
   ADD CONSTRAINT `personal_data_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `questions`
+--
+ALTER TABLE `questions`
+  ADD CONSTRAINT `questions_ibfk_1` FOREIGN KEY (`social_poll_id`) REFERENCES `social_poll` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `question_user`
@@ -284,7 +323,8 @@ ALTER TABLE `question_user`
 -- Ограничения внешнего ключа таблицы `user`
 --
 ALTER TABLE `user`
-  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`sex_id`) REFERENCES `sex` (`id`);
+  ADD CONSTRAINT `user_ibfk_1` FOREIGN KEY (`sex_id`) REFERENCES `sex` (`id`),
+  ADD CONSTRAINT `user_ibfk_2` FOREIGN KEY (`social_poll_id`) REFERENCES `social_poll` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -28,8 +28,14 @@ class Questions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['description'], 'required'],
+            [['description', 'social_poll_id'], 'required'],
             [['description'], 'string'],
+            [['social_poll_id'], 'integer'],
+            [   
+                ['social_poll_id'], 'exist', 'skipOnError' => true, 
+                'targetClass' => SocialPoll::className(), 
+                'targetAttribute' => ['social_poll_id' => 'id']
+            ],
         ];
     }
 
@@ -50,5 +56,10 @@ class Questions extends \yii\db\ActiveRecord
     public function getQuestionUsers()
     {
         return $this->hasMany(QuestionUser::className(), ['questions_id' => 'id']);
+    }
+
+    public function getSocialPoll()
+    {
+        return $this->hasOne(SocialPoll::className(), ['id' => 'social_poll_id']);
     }
 }

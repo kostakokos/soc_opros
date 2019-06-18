@@ -26,6 +26,12 @@ use yii\helpers\Url;
                                'attribute' => 'id',
                                'options' => ['width' => '50']
                             ],
+                            [
+                               'label' => 'Номер соц. опроса',
+                                'value' => function($data) {
+                                    return $data->socialPoll->name;
+                                }
+                            ],
                             'email',
                             'years_old',
                             'phone',

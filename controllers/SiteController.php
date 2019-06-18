@@ -15,6 +15,7 @@ use app\models\QuestionUser;
 use app\models\Answers;
 use app\models\User;
 use yii\data\ActiveDataProvider;
+use app\models\SocialPoll;
 
 
 class SiteController extends Controller
@@ -80,13 +81,27 @@ class SiteController extends Controller
     {
         $model = new StartForm();
         if ($model->load(Yii::$app->request->post())) {
-            if ($model->writeUser()) {
+            $user = $model->createUser();
+            if (is_object($user)) {
+
+                $session = Yii::$app->session;
+                if (!$session->isActive) {
+                    $session->open();
+                }
+                $session->set('user_pull', $user->id);
+                $session->set('socopros', $user->social_poll_id);
+
                 return $this->redirect(['poll']);
             }
         }
+
         $sex = Sex::find()->all();
         $sex = ArrayHelper::map($sex, 'id', 'name');
-        return $this->render('start', compact('model', 'sex'));
+
+        $socialPoll = SocialPoll::find()->all();
+        $socialPoll = ArrayHelper::map($socialPoll, 'id', 'name');
+
+        return $this->render('start', compact('model', 'sex', 'socialPoll'));
     }
 
     public function actionPoll()
@@ -101,11 +116,15 @@ class SiteController extends Controller
                 return $this->refresh();
             }
 
-            if ($user_pull = $session->get('user_pull')) {
+            if (($user_pull = $session->get('user_pull')) && ($socopros = $session->get('socopros'))) {
                 $question_user = QuestionUser::find()
                     ->select(['questions_id'])->where(['user_id' => $user_pull]);
                 $question = Questions::find()
-                    ->where(['not in', 'id', $question_user])->one();
+                    ->where(['and', 
+                        ['not in', 'id', $question_user],
+                        ['social_poll_id' => $socopros],
+                    ])->one();
+
                 if (!is_object($question)) {
                     $session->destroy();
                     $session->close();
@@ -123,10 +142,8 @@ class SiteController extends Controller
 
     public function actionAllpoll() 
     {
-        $question_user = QuestionUser::find()->select('user_id')->groupBy(['user_id']);
-        $users = User::find()->where(['in', 'id', $question_user]);
         $dataProvider = new ActiveDataProvider([
-            'query' => $users,
+            'query' => User::find(),
         ]);
         return $this->render('allpoll',compact('dataProvider'));
     }

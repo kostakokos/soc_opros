@@ -13,13 +13,14 @@ class StartForm extends Model
     public $name;
     public $famaly;
     public $patronymic;
+    public $socopros;
 
     public function rules()
     {
         return [
-            [['phone', 'email', 'sex', 'old'], 'required'],
+            [['phone', 'email', 'sex', 'old', 'socopros'], 'required'],
             ['email', 'email'],
-            [['sex', 'old'], 'integer'],
+            [['sex', 'old', 'socopros'], 'integer'],
             [['name', 'famaly', 'patronymic'], 'string', 'max' => 60],
             [['phone'], 'string', 'max' => 60, 'min'=>5],
         ];
@@ -35,12 +36,14 @@ class StartForm extends Model
             'name' => 'Имя',
             'famaly' => 'Фамилия',
             'patronymic' => 'Отчество',
+            'socopros' => 'Соц. опрос',
         ];
     }
 
-    public function writeUser()
+    public function createUser()
     {
         $user = new User();
+        $user->social_poll_id = $this->socopros;
         $user->phone = $this->phone;
         $user->email = $this->email;
         $user->sex_id = $this->sex;
@@ -54,13 +57,7 @@ class StartForm extends Model
                 $personalData->patronymic = $this->patronymic;
                 $personalData->save();
             }
-            $session = Yii::$app->session;
-            if (!$session->isActive) {
-                $session->open();
-            }
-            $session->set('user_pull', $user->id);
-            
-            return true;
+            return $user;
         }
         return false;
     }

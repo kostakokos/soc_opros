@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 ?>
 
@@ -13,7 +14,9 @@ use yii\widgets\ActiveForm;
             <h1 style="text-align: center;" >Заполните форму для начала опроса</h1>
             <?php $form = ActiveForm::begin([]); ?>
 
-            <?= $form->field($model, 'phone')->widget(\yii\widgets\MaskedInput::className(), [
+            <?= $form->field($model, 'socopros')->dropDownList($socialPoll, ['prompt' => 'Виберите соц. опрос']) ?>
+
+            <?= $form->field($model, 'phone')->widget(MaskedInput::className(), [
               'mask' => '+8 (999) 999 99 99',
             ]) ?>
 
